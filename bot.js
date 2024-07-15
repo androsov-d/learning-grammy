@@ -8,14 +8,14 @@ function getMessageText(ctx) {
     return messageText;
 }
 function filterMessage(message) {
-    let isFiltered = false;
     const filters = ["абрикос", "киви", "манго"];
-    const words = message.split(" ");
-    const filteredWords = words.map((word) => {
+    let isFiltered = false;
+    const cyrillicChars = /[\u0400-\u04FF]+/g;
+    const filteredWords = message.split(" ").map((word) => {
         for (const filter of filters) {
             if (word.includes(filter)) {
                 isFiltered = true;
-                return word.replace(/[\u0400-\u04FF]+/g, "FILTERED");
+                return word.replace(cyrillicChars, "FILTERED");
             }
         }
         return word;
