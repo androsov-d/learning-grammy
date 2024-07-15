@@ -20,11 +20,7 @@ function filterMessage(message) {
         }
         return word;
     });
-    if (isFiltered) {
-        console.log(filteredWords);
-        return filteredWords.join(" ");
-    }
-    return "";
+    return isFiltered ? filteredWords.join(" ") : "";
 }
 const bot = new grammy_1.Bot("7231883533:AAHTcdrpBJ4jSvDYgh7ujJbU1CylOgzG2Yk");
 bot.command("start", (ctx) => { var _a; return ctx.reply(`Hello, ${(_a = ctx.from) === null || _a === void 0 ? void 0 : _a.first_name}!`); });
