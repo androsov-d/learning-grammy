@@ -1,4 +1,7 @@
 import { Bot, Context } from "grammy";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 function getMessageText(ctx: Context) {
   const fullText = ctx.message?.text;
@@ -25,7 +28,7 @@ function filterMessage(message: String) {
   return isFiltered ? filteredWords.join(" ") : "";
 }
 
-const bot = new Bot("7231883533:AAHTcdrpBJ4jSvDYgh7ujJbU1CylOgzG2Yk");
+const bot = new Bot(process.env.TELEGRAM_BOT_TOKEN!);
 
 bot.command("start", (ctx) => ctx.reply(`Hello, ${ctx.from?.first_name}!`));
 bot.command("like", (ctx) => ctx.react("👍"));
