@@ -6,7 +6,7 @@ export function getMessageText(ctx: Context) {
   return messageText;
 }
 
-export function filterMessage(message: String) {
+export function filterMessage(message: string) {
   const filters = ["абрикос", "киви", "манго"];
 
   let isFiltered = false;
