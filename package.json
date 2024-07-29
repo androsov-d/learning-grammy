@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "dotenv": "^16.4.5",
-    "grammy": "^1.27.0"
+    "grammy": "^1.27.0",
+    "winston": "^3.13.1"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
