@@ -14,7 +14,10 @@
   "version": "1.0.0",
   "main": "bot.js",
   "scripts": {
-    "dev": "tsx --watch bot.ts"
+    "dev": "tsx --watch src/bot.ts",
+    "start": "node build/bot.js",
+    "build": "tsc",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",

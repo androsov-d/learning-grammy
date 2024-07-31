@@ -1,46 +1,47 @@
-import { getMessageText, filterMessage } from "./utils";
+import { getMessageText, filterMessage } from './utils';
 import {
   KeyboardValue,
   createInlineKeyboard,
   isOneTime,
   modifyKeyboard,
   getButtonIndex,
-} from "./keyboardUtils";
-import { Bot, GrammyError, HttpError } from "grammy";
-import dotenv from "dotenv";
+} from './utils/keyboard';
+import { Bot, GrammyError, HttpError } from 'grammy';
+import dotenv from 'dotenv';
+import logger from './services/logger';
 
 dotenv.config();
 
 async function setBotCommands(bot: Bot) {
   try {
     await bot.api.setMyCommands([
-      { command: "start", description: "Start the bot" },
-      { command: "like", description: "Add 'like' reaction on the message" },
-      { command: "add", description: "Add items and receive confirmation" },
+      { command: 'start', description: 'Start the bot' },
+      { command: 'like', description: "Add 'like' reaction on the message" },
+      { command: 'add', description: 'Add items and receive confirmation' },
     ]);
-    console.log("Successfully set bot commands!");
+    logger.info('Successfully set bot commands!');
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : JSON.stringify(error);
-    console.error("Error setting bot commands:", errorMessage);
+    logger.error(`Error setting bot commands: ${errorMessage}`);
   }
 }
 
 const bot = new Bot(process.env.TELEGRAM_BOT_TOKEN!);
 const values: Array<KeyboardValue> = [
-  ["1", "first", false],
-  ["2", "second", true],
-  ["3", "third", false],
+  ['1', 'first', false],
+  ['2', 'second', true],
+  ['3', 'third', false],
 ];
 
-bot.command("start", (ctx) => {
+bot.command('start', ctx => {
   const keyboard = createInlineKeyboard(values);
   ctx.reply(`Hello, ${ctx.from?.first_name}!`, {
     reply_markup: keyboard,
   });
 });
 
-bot.on("callback_query:data", async (ctx) => {
+bot.on('callback_query:data', async ctx => {
   const callbackData = ctx.callbackQuery.data;
   const buttonIndex = getButtonIndex(callbackData, values);
   await ctx.answerCallbackQuery({ text: values[buttonIndex][0] });
@@ -52,27 +53,27 @@ bot.on("callback_query:data", async (ctx) => {
   }
 });
 
-bot.command("like", (ctx) => ctx.react("👍"));
-bot.command("add", (ctx) => ctx.reply(`You added ${getMessageText(ctx)}`));
+bot.command('like', ctx => ctx.react('👍'));
+bot.command('add', ctx => ctx.reply(`You added ${getMessageText(ctx)}`));
 
-bot.on("message", (ctx) => {
+bot.on('message', ctx => {
   const message = ctx.message.text;
   const filteredMessage = filterMessage(message!);
-  if (filteredMessage !== "") {
+  if (filteredMessage !== '') {
     ctx.reply(filteredMessage);
   }
 });
 
-bot.catch((err) => {
+bot.catch(err => {
   const ctx = err.ctx;
-  console.error(`Error while handling update ${ctx.update.update_id}:`);
+  logger.error(`Error while handling update ${ctx.update.update_id}:`);
   const e = err.error;
   if (e instanceof GrammyError) {
-    console.error("Error in request:", e.description);
+    logger.error('Error in request:', e.description);
   } else if (e instanceof HttpError) {
-    console.error("Could not contact Telegram:", e);
+    logger.error('Could not contact Telegram:', e);
   } else {
-    console.error("Unknown error:", e);
+    logger.error('Unknown error:', e);
   }
 });
 
